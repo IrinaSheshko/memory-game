@@ -114,3 +114,54 @@ body {
 .card.open .card-content {
     display: block; 
 }
+
+/* Modal window */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* <dialog> */
+.modal {
+    border: none;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.modal::backdrop {
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(2px); 
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.leaderboard-title {
+    margin-bottom: 16px;
+}
+
+.leaderboard-list {
+    text-align: left;
+    padding-left: 24px;
+    margin-bottom: 16px;
+}
+
+.leaderboard-item {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.empty-msg {
+    color: #666;
+    font-style: italic;
+}
