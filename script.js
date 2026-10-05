@@ -1,3 +1,21 @@
+// Game state variables
+let firstCard = null;
+let secondCard = null;
+let isBoardLocked = false;
+let moves = 0;
+let matchedPairs = 0;
+let flipTimer = null;
+
+// update counters start
+
+function updateCounters() {
+    movesCounter.textContent = `Moves: ${moves}`;
+    pairsCounter.textContent = `Pairs: ${matchedPairs} / 8`;
+}
+
+// update counters end
+
+// Create DOM
 function createElement(tagName, className, text){ 
 
  const element = document.createElement(tagName);
@@ -14,6 +32,48 @@ header.append(title, newGameBtn, leaderboardBtn);
 
 document.body.append(header);
 
+// HandleCardClick(card) start
+
+function handleCardClick(card) {
+    if (isBoardLocked || card.classList.contains('open') || card === firstCard) {
+        return;
+    }
+    card.classList.add('open');
+
+    if (!firstCard){
+        firstCard = card;
+    } else {
+        secondCard = card;    
+        moves++;
+        updateCounters();
+
+        const firstImg = firstCard.querySelector('img').src;
+        const secondImg = secondCard.querySelector('img').src;
+
+        if (firstImg === secondImg) {
+            matchedPairs++;
+            updateCounters();
+            firstCard = null;
+            secondCard = null;
+        } else {
+            isBoardLocked = true;
+
+            const img1 = firstCard;
+            const img2 = secondCard;
+
+            firstCard = null;
+            secondCard = null;
+
+            flipTimer = setTimeout(() => {
+                img1.classList.remove('open');
+                img2.classList.remove('open');
+                isBoardLocked = false;
+            }, 1000);
+        }
+    }       
+}    
+
+// HandleCardClick(card) end
 
 // Create moves
 const infoPanel = createElement('div', 'info-panel');
@@ -47,8 +107,6 @@ function shuffle(array) {
 }
 // Create massiv end
 
-
-
 // Create cards start
 const shuffledCards = shuffle(cardsData);
 
@@ -61,7 +119,45 @@ function createCards() {
 
         card.append(cardContent);
         gameBoard.append(card);
+
+        card.addEventListener('click', () => handleCardClick(card));
     }
 }
 createCards();
+updateCounters();
+
 // Create cards end
+
+// Restare game start
+function restartGame() {
+    
+    if (flipTimer) {
+        clearTimeout(flipTimer);
+        flipTimer = null;
+    }
+   
+    firstCard = null;
+    secondCard = null;
+    isBoardLocked = false;
+    moves = 0;
+    matchedPairs = 0;
+   
+    updateCounters();
+    
+    const newShuffled = shuffle([...cardsData]);
+
+    gameBoard.textContent = '';
+    for (let i = 0; i < 16; i++) {
+        const card = createElement('div', 'card');
+        const cardContent = createElement('img', 'card-content');
+        cardContent.src = newShuffled[i];
+
+        card.append(cardContent);
+        gameBoard.append(card);
+
+        card.addEventListener('click', () => handleCardClick(card));
+    }
+}
+
+newGameBtn.addEventListener('click', restartGame);
+// Restare game end

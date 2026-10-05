@@ -1,7 +1,6 @@
-/* 1. Базовые настройки страницы */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #d3c4d0;
+    background-color: #d8cad5;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -11,7 +10,7 @@ body {
     padding: 20px;
 }
 
-/* 2. Шапка (Header) */
+/* Header */
 .header {
     display: flex;
     flex-direction: column;
@@ -26,9 +25,9 @@ body {
     font-size: 28px;
 }
 
-/* Кнопки в шапке */
+/* BTN */
 .btn {
-    background: linear-gradient(135deg, #4b6cb7, #182848);
+    background: linear-gradient(135deg, #4b6cb7, #667694);
     color: #ffffff;
     border: none;
     padding: 10px 18px;
@@ -45,18 +44,18 @@ body {
     box-shadow: 0 6px 14px rgba(75, 108, 183, 0.3);
 }
 .header .btn {
-    margin: 0 5px; /* Небольшой отступ между кнопками */
+    margin: 0 5px; 
 }
 
 .btn:active {
     transform: translateY(0);
 }
 
-/* 3. Панель счетчиков (Info Panel) */
+/* Info Panel */
 .info-panel {
     display: flex;
     justify-content: space-around;
-    width: 405px; /* Ширина под размер игровой сетки */
+    width: 405px; 
     background-color: #ffffff;
     padding: 12px 20px;
     border-radius: 12px;
@@ -68,7 +67,7 @@ body {
     box-sizing: border-box;
 }
 
-/* 4. Игровое поле: сетка 4x4 */
+/* Game-board */
 .game-board {
     display: grid;
     grid-template-columns: repeat(4, 90px);
@@ -80,11 +79,11 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-/* 5. Карточка (закрытая / рубашка) */
+/* Close card */
 .card {
     width: 90px;
     height: 90px;
-    background: linear-gradient(135deg, #4b6cb7, #182848);
+    background: linear-gradient(135deg, #8da5d4, #182848);
     border-radius: 12px;
     cursor: pointer;
     display: flex;
@@ -95,23 +94,23 @@ body {
 }
 
 .card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
-/* 6. Картинка внутри карточки */
+/* Image */
 .card .card-content {
-    display: none; /* Скрываем по умолчанию */
+    display: none; 
     width: 60%;
     height: 60%;
     object-fit: contain;
 }
 
-/* 7. Открытая карточка */
+/* Open card */
 .card.open {
     background: #ffffff;
-    border: 2px solid #4b6cb7;
+    border: 2px solid #c2ceeb;
 }
 
 .card.open .card-content {
-    display: block; /* Показываем картинку, когда есть класс .open */
+    display: block; 
 }
