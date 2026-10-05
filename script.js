@@ -16,7 +16,6 @@ document.body.append(header);
 
 
 // Create moves
-
 const infoPanel = createElement('div', 'info-panel');
 const gameBoard = createElement('div', 'game-board');
 const movesCounter = createElement('div', 'moves-counter', 'Moves: 0');
@@ -27,8 +26,16 @@ document.body.append(infoPanel, gameBoard);
 
 
 // Create massiv start
-
-const animals = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊','🐻','🐼'];
+const animals = [
+    'images/icons-1.png',
+    'images/icons-2.png',
+    'images/icons-3.png',
+    'images/icons-4.png',
+    'images/icons-5.png',
+    'images/icons-6.png',
+    'images/icons-7.png',
+    'images/icons-8.png',
+];
 const cardsData = animals.concat(animals);
 
 function shuffle(array) {
@@ -38,24 +45,23 @@ function shuffle(array) {
 }
     return array;
 }
-
 // Create massiv end
 
 
 
 // Create cards start
-
 const shuffledCards = shuffle(cardsData);
 
 function createCards() {
     gameBoard.textContent = '';
     for (let i = 0; i < 16; i++) {
         const card = createElement('div', 'card');
-        const cardContent = createElement('div', 'card-content', shuffledCards[i]);
+        const cardContent = createElement('img', 'card-content');
+        cardContent.src = shuffledCards[i];
+
         card.append(cardContent);
         gameBoard.append(card);
     }
 }
 createCards();
-
 // Create cards end
