@@ -26,17 +26,36 @@ infoPanel.append(movesCounter, pairsCounter);
 document.body.append(infoPanel, gameBoard);
 
 
+// Create massiv start
+
+const animals = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊','🐻','🐼'];
+const cardsData = animals.concat(animals);
+
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+}
+    return array;
+}
+
+// Create massiv end
+
+
+
 // Create cards start
+
+const shuffledCards = shuffle(cardsData);
 
 function createCards() {
     gameBoard.textContent = '';
     for (let i = 0; i < 16; i++) {
         const card = createElement('div', 'card');
-        const cardContent = createElement('div', 'card-content', '?');
+        const cardContent = createElement('div', 'card-content', shuffledCards[i]);
         card.append(cardContent);
         gameBoard.append(card);
     }
 }
 createCards();
 
-// Create cards start
+// Create cards end
