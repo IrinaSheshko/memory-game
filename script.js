@@ -18,11 +18,25 @@ document.body.append(header);
 // Create moves
 
 const infoPanel = createElement('div', 'info-panel');
+const gameBoard = createElement('div', 'game-board');
 const movesCounter = createElement('div', 'moves-counter', 'Moves: 0');
 const pairsCounter = createElement('div', 'pairs-counter', 'Pairs: 0 / 8');
 
 infoPanel.append(movesCounter, pairsCounter);
-
-const gameBoard = createElement('div', 'game-board');
-
 document.body.append(infoPanel, gameBoard);
+
+
+// Create cards start
+
+function createCards() {
+    gameBoard.textContent = '';
+    for (let i = 0; i < 16; i++) {
+        const card = createElement('div', 'card');
+        const cardContent = createElement('div', 'card-content', '?');
+        card.append(cardContent);
+        gameBoard.append(card);
+    }
+}
+createCards();
+
+// Create cards start
