@@ -195,9 +195,7 @@ modal.append(modalCloseBtn, modalContent);
 document.body.append(modal);
 
 function openModal(contentElement) {
-    modalContent.innerHTML = ''; 
-    modalContent.append(contentElement);
-    
+    modalContent.replaceChildren(contentElement);
     document.body.classList.add('modal-open');
     modal.showModal(); 
 }
@@ -246,14 +244,14 @@ function showLeaderboard() {
     
         const table = createElement('table', 'leaderboard-table');
         const thead = createElement('thead');
-        thead.innerHTML = `
-            <tr>
-                <th>№</th>
-                <th>Ходы</th>
-                <th>Дата</th>
-            </tr>
-        `;
-        
+        const headerRow = createElement('tr'); 
+
+        const headers = ['№', 'Ходы', 'Дата'];
+        headers.forEach(text => {
+            const th = createElement('th', '', text);
+            headerRow.append(th);
+        }); 
+      
         const tbody = createElement('tbody');
         scores.forEach((score, index) => {
             const tr = createElement('tr');
