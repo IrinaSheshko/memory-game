@@ -6,63 +6,98 @@ let moves = 0;
 let matchedPairs = 0;
 let flipTimer = null;
 
-// update counters start
-function updateCounters() {
-    movesCounter.textContent = `Moves: ${moves}`;
-    pairsCounter.textContent = `Pairs: ${matchedPairs} / 8`;
+// DOM Helpers
+function createElement(tagName, className, text) { 
+    const element = document.createElement(tagName);
+    if (className) element.className = className;
+    if (text) element.textContent = text;
+    return element;
 }
-// update counters end
 
-
-// Create DOM helper
-function createElement(tagName, className, text){ 
-
- const element = document.createElement(tagName);
- if (className) element.className = className;
- if (text) element.textContent = text;
- return element;
-}
 // Header DOM
 const header = createElement('header', 'header');
 const title = createElement('h1', 'game-title', 'Memory Game');
 const newGameBtn = createElement('button', 'btn', 'New Game');
 const leaderboardBtn = createElement('button', 'btn', 'Leaderboard');
 header.append(title, newGameBtn, leaderboardBtn);
-
 document.body.append(header);
 
-// Check win start
-function checkWin() {
-    if (matchedPairs === 8) {
-        saveScore(moves);
+// Info Panel & Board DOM
+const infoPanel = createElement('div', 'info-panel');
+const gameBoard = createElement('div', 'game-board');
+const movesCounter = createElement('div', 'moves-counter', 'Moves: 0');
+const pairsCounter = createElement('div', 'pairs-counter', 'Pairs: 0 / 8');
 
-        setTimeout(() => {
-            const winContainer = createElement('div', 'win-modal');
-            const winTitle = createElement('h2', 'win-title', 'Поздравляем!');
-            const winMessage = createElement('p', 'win-message', `Вы прошли игру за ${moves} ходов!`);
-            const winRestartBtn = createElement('button', 'btn', 'Новая игра');
+infoPanel.append(movesCounter, pairsCounter);
+document.body.append(infoPanel, gameBoard);
 
-            winRestartBtn.addEventListener('click', () => {
-                closeModal();
-                restartGame();
-            });
-
-            winContainer.append(winTitle, winMessage, winRestartBtn);
-                      
-            openModal(winContainer);
-        }, 300);
-    }
+// Update Counters
+function updateCounters() {
+    movesCounter.textContent = `Moves: ${moves}`;
+    pairsCounter.textContent = `Pairs: ${matchedPairs} / 8`;
 }
-// Check win end
 
-// HandleCardClick(card) start
+// Cards Data & Shuffle
+const animals = [
+    'images/icons-1.png',
+    'images/icons-2.png',
+    'images/icons-3.png',
+    'images/icons-4.png',
+    'images/icons-5.png',
+    'images/icons-6.png',
+    'images/icons-7.png',
+    'images/icons-8.png',
+];
+const cardsData = animals.concat(animals);
+
+function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+// Unified Board Initialization (заменяет дублирование в createCards и restartGame)
+function restartGame() {
+    if (flipTimer) {
+        clearTimeout(flipTimer);
+        flipTimer = null;
+    }
+
+    firstCard = null;
+    secondCard = null;
+    isBoardLocked = false;
+    moves = 0;
+    matchedPairs = 0;
+    updateCounters();
+
+    gameBoard.textContent = '';
+    const shuffledCards = shuffle(cardsData);
+
+    shuffledCards.forEach((imgSrc) => {
+        const card = createElement('div', 'card');
+        const cardContent = createElement('img', 'card-content');
+        cardContent.src = imgSrc;
+
+        card.append(cardContent);
+        gameBoard.append(card);
+
+        card.addEventListener('click', () => handleCardClick(card));
+    });
+}
+
+newGameBtn.addEventListener('click', restartGame);
+
+// Handle Card Clicks
 function handleCardClick(card) {
     if (isBoardLocked || card.classList.contains('open') || card === firstCard) {
         return;
     }
     card.classList.add('open');
 
-    if (!firstCard){
+    if (!firstCard) {
         firstCard = card;
     } else {
         secondCard = card;    
@@ -80,7 +115,6 @@ function handleCardClick(card) {
             secondCard = null;
         } else {
             isBoardLocked = true;
-
             const img1 = firstCard;
             const img2 = secondCard;
 
@@ -94,102 +128,35 @@ function handleCardClick(card) {
             }, 1000);
         }
     }       
-}    
-
-// HandleCardClick(card) end
-
-// Create moves
-const infoPanel = createElement('div', 'info-panel');
-const gameBoard = createElement('div', 'game-board');
-const movesCounter = createElement('div', 'moves-counter', 'Moves: 0');
-const pairsCounter = createElement('div', 'pairs-counter', 'Pairs: 0 / 8');
-
-infoPanel.append(movesCounter, pairsCounter);
-document.body.append(infoPanel, gameBoard);
-
-
-// Create massiv start
-const animals = [
-    'images/icons-1.png',
-    'images/icons-2.png',
-    'images/icons-3.png',
-    'images/icons-4.png',
-    'images/icons-5.png',
-    'images/icons-6.png',
-    'images/icons-7.png',
-    'images/icons-8.png',
-];
-const cardsData = animals.concat(animals);
-
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
 }
-    return array;
-}
-// Create massiv end
 
-// Create cards start
-const shuffledCards = shuffle(cardsData);
+// Check Win Condition
+function checkWin() {
+    if (matchedPairs === 8) {
+        saveScore(moves);
 
-function createCards() {
-    gameBoard.textContent = '';
-    for (let i = 0; i < 16; i++) {
-        const card = createElement('div', 'card');
-        const cardContent = createElement('img', 'card-content');
-        cardContent.src = shuffledCards[i];
+        setTimeout(() => {
+            const winContainer = createElement('div', 'win-modal');
+            const winTitle = createElement('h2', 'win-title', 'Поздравляем!');
+            const winMessage = createElement('p', 'win-message', `Вы прошли игру за ${moves} ходов!`);
+            const winRestartBtn = createElement('button', 'btn', 'Новая игра');
 
-        card.append(cardContent);
-        gameBoard.append(card);
+            winRestartBtn.addEventListener('click', () => {
+                closeModal();
+                restartGame();
+            });
 
-        card.addEventListener('click', () => handleCardClick(card));
-    }
-}
-createCards();
-updateCounters();
-// Create cards end
-
-
-// Restare game start
-function restartGame() {
-    
-    if (flipTimer) {
-        clearTimeout(flipTimer);
-        flipTimer = null;
-    }
-   
-    firstCard = null;
-    secondCard = null;
-    isBoardLocked = false;
-    moves = 0;
-    matchedPairs = 0;
-   
-    updateCounters();
-    
-    const newShuffled = shuffle([...cardsData]);
-
-    gameBoard.textContent = '';
-    for (let i = 0; i < 16; i++) {
-        const card = createElement('div', 'card');
-        const cardContent = createElement('img', 'card-content');
-        cardContent.src = newShuffled[i];
-
-        card.append(cardContent);
-        gameBoard.append(card);
-
-        card.addEventListener('click', () => handleCardClick(card));
+            winContainer.append(winTitle, winMessage, winRestartBtn);
+            openModal(winContainer);
+        }, 300);
     }
 }
 
-newGameBtn.addEventListener('click', restartGame);
-// Restare game end
-
-
-// Modal System Start 
+// Modal System
 const modal = createElement('dialog', 'modal');
 const modalContent = createElement('div', 'modal-content');
 const modalCloseBtn = createElement('button', 'modal-close-btn', '✕');
+modalCloseBtn.setAttribute('aria-label', 'Закрыть'); // Добавили aria-label для доступности
 
 modal.append(modalCloseBtn, modalContent);
 document.body.append(modal);
@@ -205,10 +172,8 @@ function closeModal() {
     document.body.classList.remove('modal-open');
 }
 
-// Close x
 modalCloseBtn.addEventListener('click', closeModal);
 
-// Close Backdrop
 modal.addEventListener('click', (event) => {
     const rect = modal.getBoundingClientRect();
     const isClickInside = 
@@ -222,26 +187,33 @@ modal.addEventListener('click', (event) => {
     }
 });
 
-// Close
 modal.addEventListener('cancel', () => {
     document.body.classList.remove('modal-open');
 });
-// Modal System End 
 
-// Leaderboard start
+// Safe LocalStorage Reader Helper
+function getStoredScores() {
+    try {
+        const data = localStorage.getItem('memoryGameScores');
+        return data ? JSON.parse(data) : [];
+    } catch (e) {
+        console.error('Ошибка чтения из localStorage:', e);
+        return [];
+    }
+}
+
+// Leaderboard
 function showLeaderboard() {
-    const scores = JSON.parse(localStorage.getItem('memoryGameScores')) || [];
+    const scores = getStoredScores();
 
     const container = createElement('div', 'leaderboard-modal');
     const title = createElement('h2', 'leaderboard-title', 'Таблица лидеров');
-    
     container.append(title);
 
     if (scores.length === 0) {
         const emptyMsg = createElement('p', 'empty-msg', 'Пока нет результатов');
         container.append(emptyMsg);
     } else {
-    
         const table = createElement('table', 'leaderboard-table');
         const thead = createElement('thead');
         const headerRow = createElement('tr'); 
@@ -251,6 +223,7 @@ function showLeaderboard() {
             const th = createElement('th', '', text);
             headerRow.append(th);
         }); 
+        thead.append(headerRow); // Исправлено: вставляем headerRow в thead
       
         const tbody = createElement('tbody');
         scores.forEach((score, index) => {
@@ -274,12 +247,12 @@ function showLeaderboard() {
 
     openModal(container);
 }
-leaderboardBtn.addEventListener('click', showLeaderboard);
-// Leaderboard end
 
-//Save LocalStorage start
+leaderboardBtn.addEventListener('click', showLeaderboard);
+
+// Save Score to LocalStorage
 function saveScore(movesCount) {
-    const scores = JSON.parse(localStorage.getItem('memoryGameScores')) || [];
+    const scores = getStoredScores();
     
     const now = new Date();
     const day = String(now.getDate()).padStart(2, '0');
@@ -304,5 +277,12 @@ function saveScore(movesCount) {
 
     const topScores = scores.slice(0, 10);
     
-    localStorage.setItem('memoryGameScores', JSON.stringify(topScores));
+    try {
+        localStorage.setItem('memoryGameScores', JSON.stringify(topScores));
+    } catch (e) {
+        console.error('Ошибка записи в localStorage:', e);
+    }
 }
+
+// Initial Game Start
+restartGame();
